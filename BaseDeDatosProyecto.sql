@@ -1,0 +1,148 @@
+DROP DATABASE IF EXISTS proyecto_Base_de_Datos;
+CREATE DATABASE proyecto_Base_de_Datos CHARSET utf8mb4;
+USE proyecto_Base_de_Datos;
+
+CREATE TABLE trabajador(
+	username VARCHAR(16) UNIQUE NOT NULL,
+	pass VARCHAR(50) NOT NULL,
+    nom1 VARCHAR(30),
+	ape1 VARCHAR(30),
+	tel TINYINT(11) UNSIGNED,
+    bajalogica BOOLEAN DEFAULT 0 NOT NULL,
+    CONSTRAINT pk_trabajador PRIMARY KEY(username) 
+);
+CREATE TABLE almacen(
+	id_alma TINYINT UNSIGNED AUTO_INCREMENT NOT NULL,
+	calle VARCHAR(30) NOT NULL,
+    num VARCHAR(10) NOT NULL,
+    esq VARCHAR(30),
+    bajalogica BOOLEAN DEFAULT 0 NOT NULL,
+    CONSTRAINT pk_almacen PRIMARY KEY(id_alma)
+);
+CREATE TABLE paquete(
+	id_paq INT UNSIGNED AUTO_INCREMENT NOT NULL,
+    calle VARCHAR(30) NOT NULL,
+    num VARCHAR(10) NOT NULL,
+    esq VARCHAR(30),
+    cliente VARCHAR(20) NOT NULL,
+    CONSTRAINT pk_paquete PRIMARY KEY(id_paq)
+);
+CREATE TABLE producto(
+	id_prod INT UNSIGNED AUTO_INCREMENT NOT NULL,
+	nom_Prod VARCHAR(30),
+	peso_Prod SMALLINT(100) UNSIGNED,
+    volumen SMALLINT(100),
+    desc_Prod VARCHAR(100),
+    bajalogica BOOLEAN DEFAULT 0 NOT NULL,
+    CONSTRAINT pk_producto PRIMARY KEY(id_prod)
+);
+CREATE TABLE camion(
+	id_camion INT UNSIGNED AUTO_INCREMENT NOT NULL,
+	cap_Cam SMALLINT(50),
+    bajalogica BOOLEAN DEFAULT 0 NOT NULL,
+    CONSTRAINT pk_camion PRIMARY KEY(id_camion)
+);
+CREATE TABLE destino(
+	id_des INT UNSIGNED AUTO_INCREMENT NOT NULL,
+	fech_Esti DATE NOT NULL,
+	dir_Des VARCHAR(100) NOT NULL,
+    bajalogica BOOLEAN DEFAULT 0 NOT NULL,
+    CONSTRAINT pk_destino PRIMARY KEY(id_des)
+);
+CREATE TABLE lote(
+	id_lote INT UNSIGNED AUTO_INCREMENT NOT NULL,
+	fech_Crea DATE,
+    id_Des INT UNSIGNED,
+	CONSTRAINT fk_IdDes_lote FOREIGN KEY(id_des) REFERENCES destino(id_des),
+    CONSTRAINT pk_lote PRIMARY KEY(id_lote)
+);
+CREATE TABLE camionero(
+	username VARCHAR(16) UNIQUE NOT NULL,
+    CONSTRAINT fk_username_camionero FOREIGN KEY(username) REFERENCES trabajador(username),
+    CONSTRAINT pk_camionero PRIMARY KEY(username)
+);
+CREATE TABLE operario(
+	username VARCHAR(16) UNIQUE NOT NULL,
+    CONSTRAINT fk_username_operario FOREIGN KEY (username) REFERENCES trabajador(username),
+    CONSTRAINT pk_operario PRIMARY KEY(username)
+);
+CREATE TABLE conduce(
+	username VARCHAR(16) UNIQUE NOT NULL,
+    id_camion INT UNSIGNED NOT NULL,
+    CONSTRAINT fk_username_conduce FOREIGN KEY (username) REFERENCES camionero(username),
+    CONSTRAINT fk_idcamion_conduce FOREIGN KEY (id_camion) REFERENCES camion(id_camion),
+    CONSTRAINT pk_conduce PRIMARY KEY (username, id_camion)
+);
+CREATE TABLE gestiona(
+	username VARCHAR(16) UNIQUE NOT NULL,
+    id_alma TINYINT UNSIGNED NOT NULL,
+    CONSTRAINT fk_username_gestiona FOREIGN KEY (username) REFERENCES operario(username),
+    CONSTRAINT fk_idalma_gestiona FOREIGN KEY (id_alma) REFERENCES almacen(id_alma),
+    CONSTRAINT pk_gestiona PRIMARY KEY (username, id_Alma)
+);
+CREATE TABLE almacena(
+	id_prod INT UNSIGNED NOT NULL,
+    id_alma TINYINT UNSIGNED NOT NULL,
+    fecha_ingre DATE,
+    CONSTRAINT fk_idprod_almacena FOREIGN KEY (id_prod) REFERENCES producto(id_prod),
+    CONSTRAINT fk_idalma_almacena FOREIGN KEY (id_alma) REFERENCES almacen(id_alma),
+    CONSTRAINT pk_almacena PRIMARY KEY (id_prod, id_alma)
+);
+CREATE TABLE integra(
+	id_paq INT UNSIGNED NOT NULL,
+    id_lote INT UNSIGNED NOT NULL,
+    CONSTRAINT fk_idprod_integra FOREIGN KEY (id_paq) REFERENCES paquete(id_paq),
+    CONSTRAINT fk_idlote_integra FOREIGN KEY (id_lote) REFERENCES lote(id_lote),
+    CONSTRAINT pk_pertence PRIMARY KEY (id_paq, id_lote)
+);
+CREATE TABLE llevan(
+	id_camion INT UNSIGNED NOT NULL,
+    id_lote INT UNSIGNED NOT NULL,
+    id_des INT UNSIGNED NOT NULL,
+    CONSTRAINT fk_idcamion_llevan FOREIGN KEY (id_camion) REFERENCES camion(id_camion),
+    CONSTRAINT fk_idlote_llevan FOREIGN KEY (id_lote) REFERENCES lote(id_lote),
+    CONSTRAINT fk_iddes_llevan FOREIGN KEY (id_des) REFERENCES destino(id_des),
+    PRIMARY KEY (id_camion, id_lote)
+);
+CREATE TABLE transporta(
+	id_camion INT UNSIGNED NOT NULL,
+    id_lote INT UNSIGNED NOT NULL,
+	estatus ENUM ("Entregado", "En camino", "Retrasado", "No enviado"),
+    CONSTRAINT fk_idcamion_camion FOREIGN KEY (id_camion) REFERENCES camion(id_camion),
+    CONSTRAINT fk_idlote_transporta FOREIGN KEY (id_lote) REFERENCES lote(id_lote),
+    CONSTRAINT pk_transporta PRIMARY KEY (id_camion, id_lote)
+);
+CREATE TABLE contiene(
+	id_prod INT UNSIGNED NOT NULL,
+    id_paq INT UNSIGNED NOT NULL,
+	CONSTRAINT fk_idprod_contiene FOREIGN KEY (id_prod) REFERENCES producto(id_prod),
+	CONSTRAINT fk_id_paq_contiene FOREIGN KEY (id_paq) REFERENCES paquete(id_paq),
+	CONSTRAINT pk_contiene PRIMARY KEY(id_paq, id_prod)
+);
+
+#CREACION USUARIOS
+SELECT user FROM mysql.user;
+CREATE USER 'root' identified by 'root1234';
+CREATE USER 'admin_bd' identified by 'admin123';
+CREATE USER 'chofer' identified by '1234';
+CREATE USER 'almacenero' identified by '4321';
+
+#PERMISOS_ROOT
+GRANT ALL PRIVILEGES ON proyecto_Base_de_Datos.all TO 'root'@'localhost';
+#PERMISOS_admin_bd
+GRANT SELECT, INSERT, DELETE, UPDATE ON proyecto_Base_de_Datos.all TO 'admin_bd'@'quickcarry.com';
+#PERMISOS_chofer
+GRANT SELECT, UPDATE ON proyecto_Base_de_Datos.entregan TO 'chofer'@'quickcarry.com';
+GRANT SELECT ON proyecto_Base_de_Datos.destino TO 'chofer'@'quickcarry.com';
+GRANT SELECT ON proyecto_Base_de_Datos.conduce TO 'chofer'@'quickcarry.com';
+GRANT SELECT ON proyecto_Base_de_Datos.llevan TO 'chofer'@'quickcarry.com';
+#PERMISOS_almacenero
+GRANT SELECT, UPDATE ON proyecto_Base_de_Datos.almacena TO 'almacenero'@'quickcarry.com';
+GRANT SELECT, UPDATE ON proyecto_Base_de_Datos.pertenece TO 'almacenero'@'quickcarry.com';
+GRANT SELECT, UPDATE ON proyecto_Base_de_Datos.llevan TO 'almacenero'@'quickcarry.com';
+GRANT SELECT ON proyecto_Base_de_Datos.trabaja TO 'almacenero'@'quickcarry.com';
+GRANT SELECT ON proyecto_Base_de_Datos.almacen TO 'almacenero'@'quickcarry.com';
+GRANT SELECT ON proyecto_Base_de_Datos.producto TO 'almacenero'@'quickcarry.com';
+GRANT SELECT ON proyecto_Base_de_Datos.lote TO 'almacenero'@'quickcarry.com';
+GRANT SELECT ON proyecto_Base_de_Datos.camion TO 'almacenero'@'quickcarry.com';
+GRANT SELECT ON proyecto_Base_de_Datos.destino TO 'almacenero'@'quickcarry.com';
