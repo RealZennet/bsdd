@@ -3,13 +3,14 @@ CREATE DATABASE proyecto_Base_de_Datos CHARSET utf8mb4;
 USE proyecto_Base_de_Datos;
 
 CREATE TABLE trabajador(
+	id INT UNSIGNED AUTO_INCREMENT,
 	username VARCHAR(16) UNIQUE NOT NULL,
 	pass VARCHAR(50) NOT NULL,
     nom VARCHAR(30),
 	ape VARCHAR(30),
 	tel TINYINT(11) UNSIGNED,
 	bajalogica BOOLEAN DEFAULT 0 NOT NULL,
-    CONSTRAINT pk_trabajador PRIMARY KEY(username) 
+    CONSTRAINT pk_trabajador PRIMARY KEY(id) 
 );
 CREATE TABLE almacen(
 	id_alma TINYINT UNSIGNED AUTO_INCREMENT NOT NULL,
@@ -63,30 +64,30 @@ CREATE TABLE lote(
     CONSTRAINT pk_lote PRIMARY KEY(id_lote, id_des, fech_Crea)
 );
 CREATE TABLE camionero(
-	username VARCHAR(16) UNIQUE NOT NULL,
+	id_camionero INT UNSIGNED NOT NULL,
 	bajalogica BOOLEAN DEFAULT 0 NOT NULL,
-    CONSTRAINT fk_username_camionero FOREIGN KEY(username) REFERENCES trabajador(username),
-    CONSTRAINT pk_camionero PRIMARY KEY(username)
+    CONSTRAINT fk_id_camionero FOREIGN KEY(id_camionero) REFERENCES trabajador(id),
+    CONSTRAINT pk_camionero PRIMARY KEY(id_camionero)
 );
 CREATE TABLE operario(
-	username VARCHAR(16) UNIQUE NOT NULL,
+	id_operario INT UNSIGNED NOT NULL,
 	bajalogica BOOLEAN DEFAULT 0 NOT NULL,
-    CONSTRAINT fk_username_operario FOREIGN KEY (username) REFERENCES trabajador(username),
-    CONSTRAINT pk_operario PRIMARY KEY(username)
+    CONSTRAINT fk_id_operario FOREIGN KEY (id_operario) REFERENCES trabajador(id),
+    CONSTRAINT pk_operario PRIMARY KEY(id_operario)
 );
 CREATE TABLE conduce(
-	username VARCHAR(16) UNIQUE NOT NULL,
+	id_camionero INT UNSIGNED NOT NULL,
     id_camion INT UNSIGNED NOT NULL,
-    CONSTRAINT fk_username_conduce FOREIGN KEY (username) REFERENCES camionero(username),
-    CONSTRAINT fk_idcamion_conduce FOREIGN KEY (id_camion) REFERENCES camion(id_camion),
-    CONSTRAINT pk_conduce PRIMARY KEY (username, id_camion)
+    CONSTRAINT fk_camionero_conduce FOREIGN KEY (id_camionero) REFERENCES camionero(id_camionero),
+    CONSTRAINT fk_camion_conduce FOREIGN KEY (id_camion) REFERENCES camion(id_camion),
+    CONSTRAINT pk_conduce PRIMARY KEY (id_camionero, id_camion)
 );
 CREATE TABLE gestiona(
-	username VARCHAR(16) UNIQUE NOT NULL,
+	id_operario INT UNSIGNED NOT NULL,
     id_alma TINYINT UNSIGNED NOT NULL,
-    CONSTRAINT fk_username_gestiona FOREIGN KEY (username) REFERENCES operario(username),
-    CONSTRAINT fk_idalma_gestiona FOREIGN KEY (id_alma) REFERENCES almacen(id_alma),
-    CONSTRAINT pk_gestiona PRIMARY KEY (username, id_Alma)
+    CONSTRAINT fk_operario_gestiona FOREIGN KEY (id_operario) REFERENCES operario(id_operario),
+    CONSTRAINT fk_almacen_gestiona FOREIGN KEY (id_alma) REFERENCES almacen(id_alma),
+    CONSTRAINT pk_gestiona PRIMARY KEY (id_operario, id_Alma)
 );
 CREATE TABLE almacena(
 	id_paq INT UNSIGNED NOT NULL,
