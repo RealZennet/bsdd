@@ -20,30 +20,25 @@ CREATE TABLE almacen(
     bajalogica BOOLEAN DEFAULT 0 NOT NULL,
     CONSTRAINT pk_almacen PRIMARY KEY(id_alma)
 );
-CREATE TABLE paquete(
-	id_paq INT UNSIGNED AUTO_INCREMENT NOT NULL,
+CREATE TABLE camion(
+	id_camion INT UNSIGNED AUTO_INCREMENT NOT NULL,
+	peso_camion SMALLINT(100),
+    volumen_camion SMALLINT(100),
+    bajalogica BOOLEAN DEFAULT 0 NOT NULL,
+    CONSTRAINT pk_camion PRIMARY KEY(id_camion)
+);
+CREATE TABLE producto(
+	id_prod INT UNSIGNED AUTO_INCREMENT NOT NULL,
+	peso_producto SMALLINT(100) UNSIGNED,
+    volumen_producto SMALLINT(100) UNSIGNED,
     calle VARCHAR(30) NOT NULL,
     num VARCHAR(10) NOT NULL,
     esq VARCHAR(30),
     cliente VARCHAR(20) NOT NULL,
     bajalogica BOOLEAN DEFAULT 0 NOT NULL,
-    CONSTRAINT pk_paquete PRIMARY KEY(id_paq)
-);
-CREATE TABLE producto(
-	id_prod INT UNSIGNED AUTO_INCREMENT NOT NULL,
-	nom_Prod VARCHAR(30),
-	peso SMALLINT(100) UNSIGNED,
-    volumen SMALLINT(100) UNSIGNED,
-    desc_Prod VARCHAR(100),
-    bajalogica BOOLEAN DEFAULT 0 NOT NULL,
+    CONSTRAINT check_peso CHECK (peso_producto <= peso_camion),
+    CONSTRAINT check_volumen CHECK (volumen_producto <= volumen_camion),
     CONSTRAINT pk_producto PRIMARY KEY(id_prod)
-);
-CREATE TABLE camion(
-	id_camion INT UNSIGNED AUTO_INCREMENT NOT NULL,
-	peso SMALLINT(100),
-    volumen SMALLINT(100),
-    bajalogica BOOLEAN DEFAULT 0 NOT NULL,
-    CONSTRAINT pk_camion PRIMARY KEY(id_camion)
 );
 CREATE TABLE destino(
 	id_des INT UNSIGNED AUTO_INCREMENT NOT NULL,
@@ -56,8 +51,8 @@ CREATE TABLE destino(
 );
 CREATE TABLE lote(
 	id_lote INT UNSIGNED AUTO_INCREMENT NOT NULL,
-	fech_Crea DATE NOT NULL,
-    fech_Entre DATE,
+	fech_crea DATE NOT NULL,
+    fech_entre DATE,
     id_des INT UNSIGNED,
     bajalogica BOOLEAN DEFAULT 0 NOT NULL,
 	CONSTRAINT fk_IdDes_lote FOREIGN KEY(id_des) REFERENCES destino(id_des),
@@ -98,9 +93,9 @@ CREATE TABLE almacena(
     CONSTRAINT pk_almacena PRIMARY KEY (id_paq, id_alma)
 );
 CREATE TABLE integra(
-	id_paq INT UNSIGNED NOT NULL,
+	id_prod INT UNSIGNED NOT NULL,
     id_lote INT UNSIGNED NOT NULL,
-    CONSTRAINT fk_idprod_integra FOREIGN KEY (id_paq) REFERENCES paquete(id_paq),
+    CONSTRAINT fk_idprod_integra FOREIGN KEY (id_prod) REFERENCES producto(id_prod),
     CONSTRAINT fk_idlote_integra FOREIGN KEY (id_lote) REFERENCES lote(id_lote),
     CONSTRAINT pk_pertence PRIMARY KEY (id_paq, id_lote)
 );
@@ -124,12 +119,16 @@ CREATE TABLE transporta(
     CONSTRAINT fk_iddes_transporta FOREIGN KEY (id_des) REFERENCES destino(id_des),
     CONSTRAINT pk_transporta PRIMARY KEY (id_camion, id_lote, id_des)
 );
-CREATE TABLE contiene(
-	id_prod INT UNSIGNED NOT NULL,
-    id_paq INT UNSIGNED NOT NULL,
-	CONSTRAINT fk_idprod_contiene FOREIGN KEY (id_prod) REFERENCES producto(id_prod),
-	CONSTRAINT fk_id_paq_contiene FOREIGN KEY (id_paq) REFERENCES paquete(id_paq),
-	CONSTRAINT pk_contiene PRIMARY KEY(id_paq, id_prod)
+CREATE TABLE recorrido(
+	id_des INT UNSIGNED NOT NULL,
+    id_alma INT UNSIGNED NOT NULL,
+    tipo_trayecto ENUM ("Inicio", "Parada", "Fin"),
+	fech_trayecto DATETIME,
+    CONSTRAINT check_fechaEntrega CHECK (fech_trayecto < fech_entre),
+    CONSTRAINT check_fechaCreacion CHECK (fech_trayecto > fech_crea),
+	CONSTRAINT fk_id_des_contiene FOREIGN KEY (id_des) REFERENCES destino(id_des),
+	CONSTRAINT fk_id_alma_contiene FOREIGN KEY (id_alma) REFERENCES almacen(id_alma),
+	CONSTRAINT pk_contiene PRIMARY KEY(id_des, id_alma)
 );
 
 #CREACION USUARIOS
