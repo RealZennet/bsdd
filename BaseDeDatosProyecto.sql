@@ -10,7 +10,7 @@ CREATE TABLE trabajador(
 	ape VARCHAR(30),
 	tel TINYINT(11) UNSIGNED,
 	bajalogica BOOLEAN DEFAULT 0 NOT NULL,
-    CONSTRAINT pk_trabajador PRIMARY KEY(id) 
+    CONSTRAINT pk_trabajador PRIMARY KEY (id) 
 );
 CREATE TABLE almacen(
 	id_alma TINYINT UNSIGNED AUTO_INCREMENT NOT NULL,
@@ -18,14 +18,14 @@ CREATE TABLE almacen(
     num VARCHAR(10) NOT NULL,
     esq VARCHAR(30),
     bajalogica BOOLEAN DEFAULT 0 NOT NULL,
-    CONSTRAINT pk_almacen PRIMARY KEY(id_alma)
+    CONSTRAINT pk_almacen PRIMARY KEY (id_alma)
 );
 CREATE TABLE camion(
 	id_camion INT UNSIGNED AUTO_INCREMENT NOT NULL,
 	peso_camion SMALLINT(100),
     volumen_camion SMALLINT(100),
     bajalogica BOOLEAN DEFAULT 0 NOT NULL,
-    CONSTRAINT pk_camion PRIMARY KEY(id_camion)
+    CONSTRAINT pk_camion PRIMARY KEY (id_camion)
 );
 CREATE TABLE producto(
 	id_prod INT UNSIGNED AUTO_INCREMENT NOT NULL,
@@ -36,16 +36,15 @@ CREATE TABLE producto(
     esq VARCHAR(30),
     cliente VARCHAR(20) NOT NULL,
     bajalogica BOOLEAN DEFAULT 0 NOT NULL,
-    CONSTRAINT pk_producto PRIMARY KEY(id_prod)
+    CONSTRAINT pk_producto PRIMARY KEY (id_prod)
 );
 CREATE TABLE destino(
 	id_des INT UNSIGNED AUTO_INCREMENT NOT NULL,
-	fech_Esti DATE NOT NULL,
 	calle VARCHAR(30) NOT NULL,
     num VARCHAR(10) NOT NULL,
     esq VARCHAR(30),
     bajalogica BOOLEAN DEFAULT 0 NOT NULL,
-    CONSTRAINT pk_destino PRIMARY KEY(id_des)
+    CONSTRAINT pk_destino PRIMARY KEY (id_des)
 );
 CREATE TABLE lote(
 	id_lote INT UNSIGNED AUTO_INCREMENT NOT NULL,
@@ -54,20 +53,20 @@ CREATE TABLE lote(
     id_des INT UNSIGNED,
     bajalogica BOOLEAN DEFAULT 0 NOT NULL,
     CONSTRAINT check_fechas CHECK (fech_entre > fech_crea),
-	CONSTRAINT fk_IdDes_lote FOREIGN KEY(id_des) REFERENCES destino(id_des),
-    CONSTRAINT pk_lote PRIMARY KEY(id_lote, id_des, fech_Crea)
+	CONSTRAINT fk_IdDes_lote FOREIGN KEY (id_des) REFERENCES destino(id_des),
+    CONSTRAINT pk_lote PRIMARY KEY (id_lote, id_des, fech_Crea)
 );
 CREATE TABLE camionero(
 	id_camionero INT UNSIGNED NOT NULL,
 	bajalogica BOOLEAN DEFAULT 0 NOT NULL,
-    CONSTRAINT fk_id_camionero FOREIGN KEY(id_camionero) REFERENCES trabajador(id),
-    CONSTRAINT pk_camionero PRIMARY KEY(id_camionero)
+    CONSTRAINT fk_id_camionero FOREIGN KEY (id_camionero) REFERENCES trabajador(id),
+    CONSTRAINT pk_camionero PRIMARY KEY (id_camionero)
 );
 CREATE TABLE operario(
 	id_operario INT UNSIGNED NOT NULL,
 	bajalogica BOOLEAN DEFAULT 0 NOT NULL,
     CONSTRAINT fk_id_operario FOREIGN KEY (id_operario) REFERENCES trabajador(id),
-    CONSTRAINT pk_operario PRIMARY KEY(id_operario)
+    CONSTRAINT pk_operario PRIMARY KEY (id_operario)
 );
 CREATE TABLE conduce(
 	id_camionero INT UNSIGNED NOT NULL,
@@ -104,7 +103,7 @@ CREATE TABLE llevan(
     fech_sal DATE NOT NULL,
     CONSTRAINT fk_idcamion_llevan FOREIGN KEY (id_camion) REFERENCES camion(id_camion),
     CONSTRAINT fk_idlote_llevan FOREIGN KEY (id_lote) REFERENCES lote(id_lote),
-    PRIMARY KEY (id_camion, id_lote)
+    CONSTRAINT pk_llevan PRIMARY KEY (id_camion, id_lote)
 );
 CREATE TABLE transporta(
 	id_camion INT UNSIGNED NOT NULL,
