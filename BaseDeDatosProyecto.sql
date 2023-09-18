@@ -113,7 +113,7 @@ CREATE TABLE transporta(
 	id_camion INT UNSIGNED NOT NULL,
     id_lote INT UNSIGNED NOT NULL,
     id_des INT UNSIGNED NOT NULL,
-	estatus ENUM ("Entregado", "En camino", "Retrasado", "No enviado"),
+	estatus ENUM ("Entregado", "EnCamino", "Retrasado", "NoEnviado"),
     CONSTRAINT fk_idcamion_camion FOREIGN KEY (id_camion) REFERENCES camion(id_camion),
     CONSTRAINT fk_idlote_transporta FOREIGN KEY (id_lote) REFERENCES lote(id_lote),
     CONSTRAINT fk_iddes_transporta FOREIGN KEY (id_des) REFERENCES destino(id_des),
