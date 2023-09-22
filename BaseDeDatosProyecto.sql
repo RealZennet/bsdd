@@ -130,7 +130,7 @@ CREATE TABLE recorrido(
 );
 
 #PERMISOS_ROOT
-GRANT ALL PRIVILEGES ON proyecto_Base_de_Datos.all TO 'root'@'localhost';
+GRANT ALL PRIVILEGES ON quickcarryDB.all TO 'root'@'localhost';
 
 #PERMISOS_ADMIN_BD
 GRANT SELECT, INSERT, DELETE, UPDATE ON quickcarryDB.trabajador TO 'admin_bd'@'localhost';
@@ -166,3 +166,136 @@ GRANT SELECT ON quickcarryDB.producto TO 'operario'@'localhost';
 GRANT SELECT ON quickcarryDB.lote TO 'operario'@'localhost';
 GRANT SELECT ON quickcarryDB.camion TO 'operario'@'localhost';
 GRANT SELECT ON quickcarryDB.destino TO 'operario'@'localhost';
+
+START TRANSACTION;
+SET AUTOCOMMIT = OFF;
+
+INSERT INTO trabajador(username, pass, nom, ape, tel, bajalogica)
+VALUES
+('jperez', 'jperez123', 'Juan', 'Perez', '095358999', 0),
+('wwhite', 'whwc789', 'Walter', 'White', '091355999', 0),
+('jrosa', 'jhombrerosa123', 'Jesse', 'Pinkman', '093358219', 0),
+('drfreeman', 'lamnda567', 'Gordon', 'Freeman', '091358922', 0),
+('2lawyer', 'soulgoodmanBTS', 'James', 'McGill', '098358929', 0),
+('kimwex', 'sleepingKim54321', 'Kimberly', 'Wexler', '095358888', 0),
+('elnoba', 'tiracorte123', 'Lautaro', 'Rene', '092358799', 0);
+
+INSERT INTO almacen (calle, num, esq, bajalogica)
+VALUES
+('Av Luis Batlle Berres', '9867', 'Av al Parque Lecocq', 0),
+('Circulacion e', '15600', 'Bypass de Pando', 0),
+('Av Carlos Reyles', '1952', '', 0),
+('Gral Fructuoso Rivera', 'km 495', '', 1),
+('Cam Antonio Lussich', '4286', 'Napoles', 0);
+
+INSERT INTO camion (peso_camion, volumen_camion, bajalogica)
+VALUES
+(26000, 90, 1),
+(26000, 90, 0),
+(26000, 90, 0),
+(26000, 90, 0);
+
+INSERT INTO producto (peso_producto, volumen_producto, calle, num, esq, cliente, bajalogica)
+VALUES
+('15000', '45', 'Calle 8', 200, 'Esquina 2', 'CRECOM', 0),
+('11000', '45', 'Calle 9', 200, 'Esquina 2', 'CRECOM', 0),
+('8000', '45', 'Calle 1', 2670, 'Esquina 7', 'CRECOM', 0),
+('5000', '10', 'Calle 2', 9201, 'Esquina 10', 'Fodex', 0),
+('5000', '25', 'Calle 3', 5372, 'Esquina 22', 'miaTienda', 0),
+('2000', '25', 'Calle 4', 8345, 'Esquina 1', 'MercadoJusto', 0);
+
+INSERT INTO destino (calle, num, esq, fech_esti, bajalogica)
+VALUES
+('Av Luis Batlle Berres', '9867', 'Av al Parque Lecocq', '2023-01-22', 0),
+('Circulacion e', '15600', 'Bypass de Pando', '2023-01-22', 0),
+('Av Carlos Reyles', '1952', '','2023-10-22', 0),
+('Gral Fructuoso Rivera', 'km 495', '', '2023-9-11', 1),
+('Cam Antonio Lussich', '4286', 'Napoles', '2023-9-11', 0);
+
+INSERT INTO lote(fech_crea, fech_entre, id_des, bajalogica)
+VALUES
+('2023-01-20', '2023-01-22', 1, 0),
+('2023-01-20', '2023-10-22', 2, 0),
+('2023-10-18', '2023-10-22', 2, 0),
+('2023-9-9', '2023-9-11', 4, 1),
+('2023-9-10', '2023-9-11', 4, 0);
+COMMIT;
+
+
+START TRANSACTION;
+SET AUTOCOMMIT = OFF;
+
+INSERT INTO camionero (id_camionero, bajalogica)
+VALUES
+(2,0),
+(3,0),
+(4,0),
+(7,0);
+
+INSERT INTO operario (id_operario, bajalogica)
+VALUES
+(1,0),
+(5,0),
+(6,0);
+COMMIT;
+
+START TRANSACTION;
+SET AUTOCOMMIT = OFF;
+
+INSERT INTO conduce (id_camionero, id_camion)
+VALUES
+(2,2),
+(3,3),
+(4,4);
+
+INSERT INTO gestiona (id_operario, id_alma)
+VALUES
+(1,1),
+(5,3),
+(6,4);
+COMMIT;
+
+
+START TRANSACTION;
+SET AUTOCOMMIT = OFF;
+
+INSERT INTO almacena (id_prod, id_alma, fecha_ingre)
+VALUES
+(1, 1, '2023-01-19'),
+(2, 1, '2023-01-19'),
+(3, 2, '2023-10-15'),
+(4, 2, '2023-10-15'),
+(5, 3, '2023-9-1'),
+(6, 3, '2023-9-5');
+
+INSERT INTO integra (id_prod, id_lote)
+VALUES
+(1, 1),
+(2, 1),
+(3, 2),
+(4, 2),
+(5, 4),
+(6, 5);
+COMMIT;
+
+START TRANSACTION;
+SET AUTOCOMMIT = OFF;
+
+INSERT INTO llevan (id_camion, id_lote, fech_sal)
+VALUES
+(2, 1, '2023-01-22'),
+(3, 2, '2023-10-22'),
+(4, 4, '2023-9-11');
+
+INSERT INTO transporta (id_camion, id_lote, id_des, estatus)
+VALUES
+(2, 1, 1, 'Entregado'),
+(3, 2, 2, 'EnCamino'),
+(4, 4, 4, 'Entregado');
+
+INSERT INTO recorrido (id_des, id_alma, tipo_trayecto, fech_trayecto)
+VALUES
+(1, 1, '2023-01-22 13:32:22', 'Entregado'),
+(2, 2, '2023-10-22 15:20:00', 'EnCamino'),
+(4, 4, '2023-9-11 20:15:10', 'Entregado');
+COMMIT;
