@@ -21,8 +21,8 @@ CREATE TABLE almacen(
 );
 CREATE TABLE camion(
 	id_camion INT UNSIGNED AUTO_INCREMENT NOT NULL,
-	peso_camion SMALLINT,
-    volumen_camion TINYINT,
+	peso_camion SMALLINT UNSIGNED,
+    volumen_camion TINYINT UNSIGNED,
     bajalogica BOOLEAN DEFAULT 0 NOT NULL,
     CONSTRAINT check_volCamion CHECK (volumen_camion <= 90),
     CONSTRAINT check_pesoCamion CHECK (peso_camion <= 26000),
@@ -128,6 +128,12 @@ CREATE TABLE recorrido(
     CONSTRAINT fk_id_alma_contiene FOREIGN KEY (id_alma) REFERENCES almacen(id_alma),
 	CONSTRAINT pk_contiene PRIMARY KEY(id_des, id_alma)
 );
+
+SELECT user FROM mysql.user;
+CREATE USER 'root' identified by 'root1234';
+CREATE USER 'admin_bd' identified by 'admin123';
+CREATE USER 'chofer' identified by '1234';
+CREATE USER 'almacenero' identified by '4321';
 
 #PERMISOS_ROOT
 GRANT ALL PRIVILEGES ON quickcarryDB.all TO 'root'@'localhost';
