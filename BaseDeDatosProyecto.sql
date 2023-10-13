@@ -21,24 +21,24 @@ CREATE TABLE almacen(
 );
 CREATE TABLE camion(
 	id_camion INT UNSIGNED AUTO_INCREMENT NOT NULL,
-	peso_camion SMALLINT UNSIGNED,
-    volumen_camion TINYINT UNSIGNED,
+	peso_camion SMALLINT,
+    volumen_camion TINYINT,
     bajalogica BOOLEAN DEFAULT 0 NOT NULL,
-    CONSTRAINT check_volCamion CHECK (volumen_camion <= 90),
-    CONSTRAINT check_pesoCamion CHECK (peso_camion <= 26000),
+    CONSTRAINT check_volCamion CHECK (volumen_camion > 0),
+    CONSTRAINT check_pesoCamion CHECK (peso_camion > 0),
     CONSTRAINT pk_camion PRIMARY KEY (id_camion)
 );
 CREATE TABLE producto(
 	id_prod INT UNSIGNED AUTO_INCREMENT NOT NULL,
-	peso_producto SMALLINT UNSIGNED,
-    volumen_producto TINYINT UNSIGNED,
+	peso_producto SMALLINT,
+    volumen_producto TINYINT,
     calle VARCHAR(30) NOT NULL,
     num VARCHAR(10) NOT NULL,
     esq VARCHAR(30),
     cliente VARCHAR(20) NOT NULL,
     bajalogica BOOLEAN DEFAULT 0 NOT NULL,
-    CONSTRAINT check_volProducto CHECK (volumen_producto <= 90),
-    CONSTRAINT check_pesoProducto CHECK (peso_producto <= 26000),
+    CONSTRAINT check_volProducto CHECK (volumen_producto > 0),
+    CONSTRAINT check_pesoProducto CHECK (peso_producto > 0),
     CONSTRAINT pk_producto PRIMARY KEY (id_prod)
 );
 CREATE TABLE destino(
@@ -46,15 +46,16 @@ CREATE TABLE destino(
 	calle VARCHAR(30) NOT NULL,
     num VARCHAR(10) NOT NULL,
     esq VARCHAR(30),
-    fech_esti DATE,
+    fech_esti DATETIME,
     bajalogica BOOLEAN DEFAULT 0 NOT NULL,
     CONSTRAINT pk_destino PRIMARY KEY (id_des)
 );
 CREATE TABLE lote(
 	id_lote INT UNSIGNED AUTO_INCREMENT NOT NULL,
 	fech_crea DATE NOT NULL,
-    fech_entre DATE,
+    fech_entre DATETIME,
     id_des INT UNSIGNED,
+    email VARCHAR(50),
     bajalogica BOOLEAN DEFAULT 0 NOT NULL,
     CONSTRAINT check_fechas CHECK (fech_entre > fech_crea),
 	CONSTRAINT fk_IdDes_lote FOREIGN KEY (id_des) REFERENCES destino(id_des),
@@ -104,7 +105,7 @@ CREATE TABLE integra(
 CREATE TABLE llevan(
 	id_camion INT UNSIGNED NOT NULL,
     id_lote INT UNSIGNED NOT NULL,
-    fech_sal DATE NOT NULL,
+    fech_sal DATETIME NOT NULL,
     CONSTRAINT fk_idcamion_llevan FOREIGN KEY (id_camion) REFERENCES camion(id_camion),
     CONSTRAINT fk_idlote_llevan FOREIGN KEY (id_lote) REFERENCES lote(id_lote),
     CONSTRAINT pk_llevan PRIMARY KEY (id_camion, id_lote)
