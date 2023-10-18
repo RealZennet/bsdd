@@ -43,9 +43,7 @@ CREATE TABLE producto(
 );
 CREATE TABLE destino(
 	id_des INT UNSIGNED AUTO_INCREMENT NOT NULL,
-	calle VARCHAR(30) NOT NULL,
-    num VARCHAR(10) NOT NULL,
-    esq VARCHAR(30),
+	link_des VARCHAR(100),
     fech_esti DATETIME,
     bajalogica BOOLEAN DEFAULT 0 NOT NULL,
     CONSTRAINT pk_destino PRIMARY KEY (id_des)
