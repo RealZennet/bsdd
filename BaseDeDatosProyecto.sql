@@ -56,6 +56,7 @@ CREATE TABLE lote(
     fech_entre DATETIME,
     id_des INT UNSIGNED,
     email VARCHAR(50),
+    posicion ENUM("Adelante", "Intermedio","Atras"),
     bajalogica BOOLEAN DEFAULT 0 NOT NULL,
     CONSTRAINT check_fechas CHECK (fech_entre > fech_crea),
 	CONSTRAINT fk_IdDes_lote FOREIGN KEY (id_des) REFERENCES destino(id_des),
@@ -213,19 +214,19 @@ VALUES
 
 INSERT INTO destino (calle, num, esq, fech_esti, bajalogica)
 VALUES
-('Av Luis Batlle Berres', '9867', 'Av al Parque Lecocq', '2023-01-22', 0),
-('Circulacion e', '15600', 'Bypass de Pando', '2023-01-22', 0),
-('Av Carlos Reyles', '1952', '','2023-10-22', 0),
-('Gral Fructuoso Rivera', 'km 495', '', '2023-9-11', 1),
-('Cam Antonio Lussich', '4286', 'Napoles', '2023-9-11', 0);
+('Av Luis Batlle Berres', '9867', 'Av al Parque Lecocq', '2023-01-22 12:45:00', 0),
+('Circulacion e', '15600', 'Bypass de Pando', '2023-01-22 22:15:00', 0),
+('Av Carlos Reyles', '1952', '','2023-10-22 9:30:00', 0),
+('Gral Fructuoso Rivera', 'km 495', '', '2023-9-11 12:00:00', 1),
+('Cam Antonio Lussich', '4286', 'Napoles', '2023-9-11 10:30:00', 0);
 
 INSERT INTO lote(fech_crea, fech_entre, id_des, bajalogica)
 VALUES
-('2023-01-20', '2023-01-22', 1, 0),
-('2023-01-20', '2023-10-22', 2, 0),
-('2023-10-18', '2023-10-22', 2, 0),
-('2023-9-9', '2023-9-11', 4, 1),
-('2023-9-10', '2023-9-11', 4, 0);
+('2023-01-20', '2023-01-22 13:00:00', 1, 0),
+('2023-01-20', '2023-10-22 23:00:00', 2, 0),
+('2023-10-18', '2023-10-22 10:00:00', 2, 0),
+('2023-9-9', '2023-9-11 13:30:30', 4, 1),
+('2023-9-10', '2023-9-11 11:30:00', 4, 0);
 COMMIT;
 
 
@@ -302,7 +303,7 @@ VALUES
 
 INSERT INTO recorrido (id_des, id_alma, tipo_trayecto, fech_trayecto)
 VALUES
-(1, 1, '2023-01-22 13:32:22', 'Entregado'),
-(2, 2, '2023-10-22 15:20:00', 'EnCamino'),
-(4, 4, '2023-9-11 20:15:10', 'Entregado');
+(1, 1, '2023-01-22 12:32:57', 'Entregado'),
+(2, 2, '2023-10-22 9:11:29', 'EnCamino'),
+(4, 4, '2023-9-11 11:59:14', 'Entregado');
 COMMIT;
