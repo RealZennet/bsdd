@@ -56,7 +56,7 @@ CREATE TABLE lote(
     fech_entre DATETIME,
     id_des INT UNSIGNED,
     email VARCHAR(50),
-    posicion ENUM("Adelante", "Intermedio","Atras"),
+    posicion ENUM("Adelante", "Intermedio","Atras") NOT NULL,
     bajalogica BOOLEAN DEFAULT 0 NOT NULL,
     CONSTRAINT check_fechas CHECK (fech_entre > fech_crea),
 	CONSTRAINT fk_IdDes_lote FOREIGN KEY (id_des) REFERENCES destino(id_des),
@@ -220,13 +220,13 @@ VALUES
 ('Gral Fructuoso Rivera', 'km 495', '', '2023-9-11 12:00:00', 1),
 ('Cam Antonio Lussich', '4286', 'Napoles', '2023-9-11 10:30:00', 0);
 
-INSERT INTO lote(fech_crea, fech_entre, id_des, bajalogica)
+INSERT INTO lote(fech_crea, fech_entre, id_des, posicion ,bajalogica)
 VALUES
-('2023-01-20', '2023-01-22 13:00:00', 1, 0),
-('2023-01-20', '2023-10-22 23:00:00', 2, 0),
-('2023-10-18', '2023-10-22 10:00:00', 2, 0),
-('2023-9-9', '2023-9-11 13:30:30', 4, 1),
-('2023-9-10', '2023-9-11 11:30:00', 4, 0);
+('2023-01-20', '2023-01-22 13:00:00', 1, "Adelante", 0),
+('2023-01-20', '2023-10-22 23:00:00', 2, "Atras", 0),
+('2023-10-18', '2023-10-22 10:00:00', 2, "Adelante", 0),
+('2023-9-9', '2023-9-11 13:30:30', 4, "Atras", 1),
+('2023-9-10', '2023-9-11 11:30:00', 4, "Adelante", 0);
 COMMIT;
 
 
